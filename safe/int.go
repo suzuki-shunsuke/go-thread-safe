@@ -41,16 +41,6 @@ func (i *Int) SetFunc(f func(v int) int) {
 	i.mutex.Unlock()
 }
 
-// SetFuncR gets a value and calls the function and sets the returned value with lock.
-// This is used to update the value based on the original value atomicaly.
-func (i *Int) SetFuncR(f func(v int) int) int {
-	i.mutex.Lock()
-	v := f(i.value)
-	i.value = v
-	i.mutex.Unlock()
-	return v
-}
-
 // Add adds a value with lock.
 func (i *Int) Add(v int) {
 	i.mutex.Lock()

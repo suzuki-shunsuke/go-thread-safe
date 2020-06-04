@@ -34,14 +34,6 @@ func (s *Bool) SetFunc(f func(v bool) bool) {
 	s.mutex.Unlock()
 }
 
-func (s *Bool) SetFuncR(f func(v bool) bool) bool {
-	s.mutex.Lock()
-	v := f(s.value)
-	s.value = v
-	s.mutex.Unlock()
-	return v
-}
-
 func (s *Bool) Invert() {
 	s.mutex.Lock()
 	s.value = !s.value

@@ -73,30 +73,6 @@ func TestBool_SetFunc(t *testing.T) {
 	}
 }
 
-func TestBool_SetFuncR(t *testing.T) {
-	age := NewBool(true)
-	var wg sync.WaitGroup
-	wg.Add(2)
-	go func() {
-		age.SetFuncR(func(v bool) bool {
-			return !v
-		})
-		wg.Done()
-	}()
-	go func() {
-		age.SetFuncR(func(v bool) bool {
-			return !v
-		})
-		wg.Done()
-	}()
-	wg.Wait()
-	a := age.Get()
-	exp := true
-	if a != exp {
-		t.Fatalf(`Bool.Get() = %t, wanted %t`, a, exp)
-	}
-}
-
 func TestBool_Invert(t *testing.T) {
 	age := NewBool(false)
 	var wg sync.WaitGroup

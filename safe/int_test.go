@@ -71,29 +71,6 @@ func TestInt_SetFunc(t *testing.T) {
 	}
 }
 
-func TestInt_SetFuncR(t *testing.T) {
-	age := NewInt(5)
-	var wg sync.WaitGroup
-	wg.Add(2)
-	go func() {
-		age.SetFuncR(func(v int) int {
-			return v + 1
-		})
-		wg.Done()
-	}()
-	go func() {
-		age.SetFuncR(func(v int) int {
-			return v + 2
-		})
-		wg.Done()
-	}()
-	wg.Wait()
-	a := age.Get()
-	if a != 8 {
-		t.Fatalf("Int.Get() = %d, wanted 8", a)
-	}
-}
-
 func TestInt_Add(t *testing.T) {
 	age := NewInt(5)
 	var wg sync.WaitGroup
