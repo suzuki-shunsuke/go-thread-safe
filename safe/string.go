@@ -34,14 +34,6 @@ func (s *String) SetFunc(f func(v string) string) {
 	s.mutex.Unlock()
 }
 
-func (s *String) SetFuncR(f func(v string) string) string {
-	s.mutex.Lock()
-	v := f(s.value)
-	s.value = v
-	s.mutex.Unlock()
-	return v
-}
-
 func (s *String) Add(v string) {
 	s.mutex.Lock()
 	s.value += v

@@ -101,16 +101,6 @@ func (m *MapString) SetFunc(k string, f func(v string) string) {
 	m.mutex.Unlock()
 }
 
-// SetFunc gets a value of the key from the map and calls the function and sets the returned value to the map with lock.
-// This is used to update the value based on the original value atomicaly.
-func (m *MapString) SetFuncR(k string, f func(v string) string) string {
-	m.mutex.Lock()
-	v := f(m.value[k])
-	m.value[k] = v
-	m.mutex.Unlock()
-	return v
-}
-
 // Range gets all pairs of the key and value from the map and call the function with lock.
 func (m *MapString) Range(f func(k, v string)) {
 	m.mutex.RLock()

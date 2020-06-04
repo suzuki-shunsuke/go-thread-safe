@@ -72,30 +72,6 @@ func TestString_SetFunc(t *testing.T) {
 	}
 }
 
-func TestString_SetFuncR(t *testing.T) {
-	age := NewString("hello")
-	var wg sync.WaitGroup
-	wg.Add(2)
-	go func() {
-		age.SetFuncR(func(v string) string {
-			return v + "!"
-		})
-		wg.Done()
-	}()
-	go func() {
-		age.SetFuncR(func(v string) string {
-			return v + "!!"
-		})
-		wg.Done()
-	}()
-	wg.Wait()
-	a := age.Get()
-	exp := "hello!!!"
-	if a != exp {
-		t.Fatalf(`String.Get() = "%s", wanted "%s"`, a, exp)
-	}
-}
-
 func TestString_Add(t *testing.T) {
 	age := NewString("hello")
 	var wg sync.WaitGroup

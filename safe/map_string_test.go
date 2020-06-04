@@ -202,21 +202,6 @@ func TestMapString_SetFunc(t *testing.T) {
 	}
 }
 
-func TestMapString_SetFuncR(t *testing.T) {
-	age := NewMapString(map[string]string{"foo": "bar"}, 1)
-	b := age.SetFuncR("foo", func(v string) string {
-		return v + " world"
-	})
-	a := age.value["foo"]
-	exp := "bar world"
-	if a != exp {
-		t.Fatalf("age.value['foo'] = %s, wanted %s", a, exp)
-	}
-	if b != exp {
-		t.Fatalf("age.value['foo'] = %s, wanted %s", b, exp)
-	}
-}
-
 func TestMapString_Range(t *testing.T) {
 	age := NewMapString(map[string]string{"foo": "bar"}, 1)
 	age.Range(func(k, v string) {
