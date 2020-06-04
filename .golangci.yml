@@ -1,0 +1,13 @@
+---
+linters:
+  enable-all: true
+  disable:
+  - wsl
+  - testpackage
+  - godot
+  - goerr113
+  - lll
+  - funlen
+  - gocognit
+  - godox
+  - nestif
