@@ -7,7 +7,7 @@ import (
 
 func TestBool_Get(t *testing.T) {
 	v := true
-	age := NewBool(v)
+	age := &Bool{value: v}
 	var wg sync.WaitGroup
 	wg.Add(2)
 	a := false
@@ -30,7 +30,7 @@ func TestBool_Get(t *testing.T) {
 }
 
 func TestBool_Set(t *testing.T) {
-	age := NewBool(false)
+	age := &Bool{}
 	var wg sync.WaitGroup
 	wg.Add(2)
 	go func() {
@@ -50,7 +50,7 @@ func TestBool_Set(t *testing.T) {
 }
 
 func TestBool_SetFunc(t *testing.T) {
-	age := NewBool(true)
+	age := &Bool{value: true}
 	var wg sync.WaitGroup
 	wg.Add(2)
 	go func() {
@@ -74,7 +74,7 @@ func TestBool_SetFunc(t *testing.T) {
 }
 
 func TestBool_Invert(t *testing.T) {
-	age := NewBool(false)
+	age := &Bool{}
 	var wg sync.WaitGroup
 	wg.Add(2)
 	go func() {
@@ -94,7 +94,7 @@ func TestBool_Invert(t *testing.T) {
 }
 
 func TestBool_InvertR(t *testing.T) {
-	age := NewBool(false)
+	age := &Bool{}
 	var wg sync.WaitGroup
 	wg.Add(2)
 	go func() {

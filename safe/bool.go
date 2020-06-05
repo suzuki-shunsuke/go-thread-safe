@@ -4,15 +4,11 @@ import (
 	"sync"
 )
 
+// Bool wraps bool.
+// Bool must be used as the pointer because Bool has sync.RWMutex as a private field.
 type Bool struct {
 	value bool
 	mutex sync.RWMutex
-}
-
-func NewBool(v bool) *Bool {
-	return &Bool{
-		value: v,
-	}
 }
 
 func (s *Bool) Get() bool {
