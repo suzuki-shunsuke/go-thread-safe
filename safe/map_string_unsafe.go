@@ -32,6 +32,13 @@ func (m *MapString) SetUnsafe(k, v string) {
 	m.value[k] = v
 }
 
+// SetDefaultUnsafe sets the key and value to the map if the map doesn't have the key without lock.
+func (m *MapString) SetDefaultUnsafe(k, v string) {
+	if _, ok := m.value[k]; !ok {
+		m.value[k] = v
+	}
+}
+
 // RangeUnsafe gets all pairs of the key and value from the map and call the function without lock.
 func (m *MapString) RangeUnsafe(f func(k, v string)) {
 	for k, v := range m.value {
