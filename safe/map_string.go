@@ -137,14 +137,19 @@ func (m *MapString) Range(f func(k, v string)) {
 	}
 }
 
-// RangeBUnsafe gets pairs of the key and value from the map and call the function with lock.
+// RangeB gets all pairs of the key and value from the map with lock and calls the function.
 // If the function returns false, the loop ends.
 func (m *MapString) RangeB(f func(k, v string) bool) {
 	m.mutex.RLock()
+	copiedM := make(map[string]string, len(m.value))
 	for k, v := range m.value {
+		copiedM[k] = v
+	}
+	m.mutex.RUnlock()
+
+	for k, v := range copiedM {
 		if !f(k, v) {
 			break
 		}
 	}
-	m.mutex.RUnlock()
 }
