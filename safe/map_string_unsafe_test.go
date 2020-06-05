@@ -5,7 +5,7 @@ import (
 )
 
 func TestMapString_GetUnsafe(t *testing.T) {
-	age := NewMapString(map[string]string{"foo": "bar"}, 1)
+	age := NewMapString(map[string]string{"foo": "bar"})
 	a := age.GetUnsafe("foo")
 	exp := "bar"
 	if a != exp {
@@ -14,7 +14,7 @@ func TestMapString_GetUnsafe(t *testing.T) {
 }
 
 func TestMapString_GetOkUnsafe(t *testing.T) {
-	age := NewMapString(map[string]string{"foo": "bar"}, 1)
+	age := NewMapString(map[string]string{"foo": "bar"})
 	a, ok := age.GetOkUnsafe("foo")
 	exp := "bar"
 	if a != exp {
@@ -26,7 +26,7 @@ func TestMapString_GetOkUnsafe(t *testing.T) {
 }
 
 func TestMapString_HasUnsafe(t *testing.T) {
-	age := NewMapString(map[string]string{"foo": "bar"}, 1)
+	age := NewMapString(map[string]string{"foo": "bar"})
 	ok := age.HasUnsafe("foo")
 	if !ok {
 		t.Fatalf("MapString.HasUnsafe() = %t, wanted %t", ok, false)
@@ -34,7 +34,7 @@ func TestMapString_HasUnsafe(t *testing.T) {
 }
 
 func TestMapString_LenUnsafe(t *testing.T) {
-	age := NewMapString(map[string]string{"foo": "bar"}, 1)
+	age := NewMapString(map[string]string{"foo": "bar"})
 	a := age.LenUnsafe()
 	if a != 1 {
 		t.Fatalf("MapString.LenUnsafe() = %d, wanted %d", a, 1)
@@ -42,7 +42,7 @@ func TestMapString_LenUnsafe(t *testing.T) {
 }
 
 func TestMapString_DeleteUnsafe(t *testing.T) {
-	age := NewMapString(map[string]string{"foo": "bar"}, 1)
+	age := NewMapString(map[string]string{"foo": "bar"})
 	age.DeleteUnsafe("foo")
 	a := len(age.value)
 	if a != 0 {
@@ -51,7 +51,7 @@ func TestMapString_DeleteUnsafe(t *testing.T) {
 }
 
 func TestMapString_SetUnsafe(t *testing.T) {
-	age := NewMapString(map[string]string{"foo": "bar"}, 1)
+	age := NewMapString(map[string]string{"foo": "bar"})
 	exp := "zoo"
 	age.SetUnsafe("foo", exp)
 	a := age.value["foo"]
@@ -63,7 +63,7 @@ func TestMapString_SetUnsafe(t *testing.T) {
 func TestMapString_SetDefaultUnsafe(t *testing.T) {
 	exp := "bar"
 	key := "foo"
-	age := NewMapString(map[string]string{key: exp}, 1)
+	age := NewMapString(map[string]string{"foo": "bar"})
 	age.SetDefaultUnsafe(key, "zoo")
 	a := age.value[key]
 	if a != exp {
@@ -80,7 +80,7 @@ func TestMapString_SetDefaultUnsafe(t *testing.T) {
 func TestMapString_SetDefaultRUnsafe(t *testing.T) {
 	exp := "bar"
 	key := "foo"
-	age := NewMapString(map[string]string{key: exp}, 1)
+	age := NewMapString(map[string]string{"foo": "bar"})
 	age.SetDefaultRUnsafe(key, "zoo")
 	a := age.value[key]
 	if a != exp {
@@ -95,7 +95,7 @@ func TestMapString_SetDefaultRUnsafe(t *testing.T) {
 }
 
 func TestMapString_RangeUnsafe(t *testing.T) {
-	age := NewMapString(map[string]string{"foo": "bar"}, 1)
+	age := NewMapString(map[string]string{"foo": "bar"})
 	age.RangeUnsafe(func(k, v string) {
 		if k != "foo" {
 			t.Fatalf("k = %s, wanted %s", k, "foo")
@@ -107,7 +107,7 @@ func TestMapString_RangeUnsafe(t *testing.T) {
 }
 
 func TestMapString_RangeBUnsafe(t *testing.T) {
-	age := NewMapString(map[string]string{"foo": "bar"}, 1)
+	age := NewMapString(map[string]string{"foo": "bar"})
 	age.RangeBUnsafe(func(k, v string) bool {
 		if k != "foo" {
 			t.Fatalf("k = %s, wanted %s", k, "foo")
@@ -120,8 +120,9 @@ func TestMapString_RangeBUnsafe(t *testing.T) {
 }
 
 func TestMapString_CopyUnsafe(t *testing.T) {
-	age := NewMapString(map[string]string{"foo": "bar"}, 1)
-	cp := age.CopyUnsafe()
+	age := NewMapString(map[string]string{"foo": "bar"})
+	cp := NewMapString(map[string]string{})
+	age.CopyUnsafe(cp)
 
 	exp := 1
 	a := len(cp.value)
@@ -131,7 +132,7 @@ func TestMapString_CopyUnsafe(t *testing.T) {
 }
 
 func TestMapString_CopyDataUnsafe(t *testing.T) {
-	age := NewMapString(map[string]string{"foo": "bar"}, 1)
+	age := NewMapString(map[string]string{"foo": "bar"})
 	cp := make(map[string]string, 1)
 	age.CopyDataUnsafe(cp)
 

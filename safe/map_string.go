@@ -7,25 +7,19 @@ import (
 )
 
 // MapString wraps map[string]string.
+// MapString must be created by NewMapString.
 type MapString struct {
 	value map[string]string
 	mutex sync.RWMutex
 }
 
 // NewMapString creates a MapString.
-// The key and values of `value` are copied to MapString.
-// size is an initial map size.
-func NewMapString(value map[string]string, size int) *MapString {
-	s := len(value)
-	if s > size {
-		size = s
-	}
-	val := make(map[string]string, size) // escapes to heap
-	for k, v := range value {
-		val[k] = v
-	}
+// The argument `value` must not be nil.
+// Note that the argument `value` is holden in MapString, so don't read and write `value` out of the MapString.
+func NewMapString(value map[string]string) *MapString {
+	// To avoid the heap allocation, don't copy `value` and create a new map.
 	return &MapString{ // escapes to heap
-		value: val,
+		value: value,
 	}
 }
 
@@ -178,11 +172,12 @@ func (m *MapString) RangeB(f func(k, v string) bool) {
 }
 
 // Copy copies and creates a new MapString.
-func (m *MapString) Copy() *MapString {
+func (m *MapString) Copy(target *MapString) {
 	m.mutex.RLock()
-	ret := NewMapString(m.value, 0)
+	for k, v := range m.value {
+		target.value[k] = v
+	}
 	m.mutex.RUnlock()
-	return ret
 }
 
 // CopyData copies an internal map[string]string to target.

@@ -8,7 +8,7 @@ import (
 )
 
 func TestMapString_String(t *testing.T) {
-	age := NewMapString(map[string]string{"foo": "bar"}, 0)
+	age := NewMapString(map[string]string{"foo": "bar"})
 	var wg sync.WaitGroup
 	wg.Add(2)
 	a := ""
@@ -28,7 +28,7 @@ func TestMapString_String(t *testing.T) {
 }
 
 func TestMapString_MarshalJSON(t *testing.T) {
-	age := NewMapString(map[string]string{"foo": "bar"}, 0)
+	age := NewMapString(map[string]string{"foo": "bar"})
 	var wg sync.WaitGroup
 	wg.Add(2)
 	var err error
@@ -57,7 +57,7 @@ func TestMapString_MarshalJSON(t *testing.T) {
 }
 
 func TestMapString_UnmarshalJSON(t *testing.T) {
-	age := NewMapString(map[string]string{"foo": "bar"}, 0)
+	age := NewMapString(map[string]string{"foo": "bar"})
 	var wg sync.WaitGroup
 	buf := []byte(`{"hello":"world"}`)
 	wg.Add(2)
@@ -88,7 +88,7 @@ func TestMapString_UnmarshalJSON(t *testing.T) {
 }
 
 func TestMapString_Get(t *testing.T) {
-	age := NewMapString(map[string]string{"foo": "bar"}, 0)
+	age := NewMapString(map[string]string{"foo": "bar"})
 
 	var wg sync.WaitGroup
 	wg.Add(2)
@@ -112,7 +112,7 @@ func TestMapString_Get(t *testing.T) {
 }
 
 func TestMapString_GetOk(t *testing.T) {
-	age := NewMapString(map[string]string{"foo": "bar"}, 1)
+	age := NewMapString(map[string]string{"foo": "bar"})
 
 	var wg sync.WaitGroup
 	wg.Add(2)
@@ -139,7 +139,7 @@ func TestMapString_GetOk(t *testing.T) {
 }
 
 func TestMapString_Has(t *testing.T) {
-	age := NewMapString(map[string]string{"foo": "bar"}, 1)
+	age := NewMapString(map[string]string{"foo": "bar"})
 	key := "foo"
 
 	var wg sync.WaitGroup
@@ -162,7 +162,7 @@ func TestMapString_Has(t *testing.T) {
 }
 
 func TestMapString_Len(t *testing.T) {
-	age := NewMapString(map[string]string{"foo": "bar"}, 1)
+	age := NewMapString(map[string]string{"foo": "bar"})
 
 	var wg sync.WaitGroup
 	wg.Add(2)
@@ -183,7 +183,7 @@ func TestMapString_Len(t *testing.T) {
 }
 
 func TestMapString_Delete(t *testing.T) {
-	age := NewMapString(map[string]string{"foo": "bar"}, 1)
+	age := NewMapString(map[string]string{"foo": "bar"})
 
 	var wg sync.WaitGroup
 	wg.Add(2)
@@ -205,7 +205,7 @@ func TestMapString_Delete(t *testing.T) {
 
 func TestMapString_DeleteR(t *testing.T) {
 	exp := "bar" //nolint:goconst
-	age := NewMapString(map[string]string{"foo": exp}, 1)
+	age := NewMapString(map[string]string{"foo": "bar"})
 
 	var wg sync.WaitGroup
 	wg.Add(2)
@@ -227,7 +227,7 @@ func TestMapString_DeleteR(t *testing.T) {
 
 func TestMapString_DeleteROk(t *testing.T) {
 	exp := "bar"
-	age := NewMapString(map[string]string{"foo": exp}, 1)
+	age := NewMapString(map[string]string{"foo": "bar"})
 
 	var wg sync.WaitGroup
 	wg.Add(2)
@@ -251,7 +251,7 @@ func TestMapString_DeleteROk(t *testing.T) {
 }
 
 func TestMapString_Set(t *testing.T) {
-	age := NewMapString(map[string]string{"foo": "bar"}, 1)
+	age := NewMapString(map[string]string{"foo": "bar"})
 	exp := "zoo"
 
 	var wg sync.WaitGroup
@@ -273,7 +273,7 @@ func TestMapString_Set(t *testing.T) {
 }
 
 func TestMapString_SetFunc(t *testing.T) {
-	age := NewMapString(map[string]string{"foo": "bar"}, 1)
+	age := NewMapString(map[string]string{"foo": "bar"})
 	age.SetFunc("foo", func(v string, ok bool) string {
 		return v + " world"
 	})
@@ -285,7 +285,7 @@ func TestMapString_SetFunc(t *testing.T) {
 }
 
 func TestMapString_Range(t *testing.T) {
-	age := NewMapString(map[string]string{"foo": "bar"}, 1)
+	age := NewMapString(map[string]string{"foo": "bar"})
 	age.Range(func(k, v string) {
 		if k != "foo" {
 			t.Fatalf("k = %s, wanted %s", k, "foo")
@@ -305,7 +305,7 @@ func TestMapString_Range(t *testing.T) {
 }
 
 func TestMapString_RangeB(t *testing.T) {
-	age := NewMapString(map[string]string{"foo": "bar"}, 1)
+	age := NewMapString(map[string]string{"foo": "bar"})
 	age.RangeB(func(k, v string) bool {
 		if k != "foo" {
 			t.Fatalf("k = %s, wanted %s", k, "foo")
@@ -327,13 +327,13 @@ func TestMapString_RangeB(t *testing.T) {
 }
 
 func TestMapString_Copy(t *testing.T) {
-	age := NewMapString(map[string]string{"foo": "bar"}, 1)
+	age := NewMapString(map[string]string{"foo": "bar"})
 
 	var wg sync.WaitGroup
-	var cp *MapString
+	cp := NewMapString(map[string]string{})
 	wg.Add(2)
 	go func() {
-		cp = age.Copy()
+		age.Copy(cp)
 		wg.Done()
 	}()
 	go func() {
@@ -350,7 +350,7 @@ func TestMapString_Copy(t *testing.T) {
 }
 
 func TestMapString_CopyData(t *testing.T) {
-	age := NewMapString(map[string]string{"foo": "bar"}, 1)
+	age := NewMapString(map[string]string{"foo": "bar"})
 
 	var wg sync.WaitGroup
 	cp := map[string]string{}
@@ -373,7 +373,7 @@ func TestMapString_CopyData(t *testing.T) {
 }
 
 func TestMapString_SetDefault(t *testing.T) {
-	age := NewMapString(map[string]string{"foo": "bar"}, 1)
+	age := NewMapString(map[string]string{"foo": "bar"})
 
 	var wg sync.WaitGroup
 	wg.Add(2)
@@ -401,7 +401,7 @@ func TestMapString_SetDefault(t *testing.T) {
 }
 
 func TestMapString_SetDefaultR(t *testing.T) {
-	age := NewMapString(map[string]string{"foo": "bar"}, 1)
+	age := NewMapString(map[string]string{"foo": "bar"})
 
 	var wg sync.WaitGroup
 	wg.Add(2)
@@ -430,7 +430,7 @@ func TestMapString_SetDefaultR(t *testing.T) {
 
 func BenchmarkMapString_Set(b *testing.B) {
 	key := "foo"
-	age := NewMapString(map[string]string{key: "bar"}, 1)
+	age := NewMapString(map[string]string{key: "bar"})
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		a := age.Get(key)
@@ -440,11 +440,19 @@ func BenchmarkMapString_Set(b *testing.B) {
 
 func BenchmarkMapString_SetFunc(b *testing.B) {
 	key := "foo"
-	age := NewMapString(map[string]string{key: "bar"}, 1)
+	age := NewMapString(map[string]string{key: "bar"})
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		age.SetFunc(key, func(v string, ok bool) string {
 			return v + " world"
 		})
+	}
+}
+
+func BenchmarkNewMapString(b *testing.B) {
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		age := NewMapString(map[string]string{"foo": "bar"})
+		age.LenUnsafe()
 	}
 }
