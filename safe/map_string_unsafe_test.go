@@ -77,6 +77,23 @@ func TestMapString_SetDefaultUnsafe(t *testing.T) {
 	}
 }
 
+func TestMapString_SetDefaultRUnsafe(t *testing.T) {
+	exp := "bar"
+	key := "foo"
+	age := NewMapString(map[string]string{key: exp}, 1)
+	age.SetDefaultRUnsafe(key, "zoo")
+	a := age.value[key]
+	if a != exp {
+		t.Fatalf("age.value['foo'] = %s, wanted %s", a, exp)
+	}
+
+	age.SetDefaultRUnsafe("zoo", "goo")
+	a = age.value["zoo"]
+	if a != "goo" {
+		t.Fatalf("age.value['zoo'] = %s, wanted %s", a, "goo")
+	}
+}
+
 func TestMapString_RangeUnsafe(t *testing.T) {
 	age := NewMapString(map[string]string{"foo": "bar"}, 1)
 	age.RangeUnsafe(func(k, v string) {
