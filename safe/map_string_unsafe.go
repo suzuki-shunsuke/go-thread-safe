@@ -55,3 +55,8 @@ func (m *MapString) RangeBUnsafe(f func(k, v string) bool) {
 		}
 	}
 }
+
+// CopyUnsafe copies and creates a new MapString without lock.
+func (m *MapString) CopyUnsafe() *MapString {
+	return NewMapString(m.value, 0)
+}
