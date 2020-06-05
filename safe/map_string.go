@@ -117,9 +117,10 @@ func (m *MapString) SetDefaultR(k, v string) (string, bool) {
 
 // SetFunc gets a value of the key from the map and calls the function and sets the returned value to the map with lock.
 // This is used to update the value based on the original value atomicaly.
-func (m *MapString) SetFunc(k string, f func(v string) string) {
+func (m *MapString) SetFunc(k string, f func(string, bool) string) {
 	m.mutex.Lock()
-	m.value[k] = f(m.value[k])
+	v, ok := m.value[k]
+	m.value[k] = f(v, ok)
 	m.mutex.Unlock()
 }
 

@@ -192,7 +192,7 @@ func TestMapString_Set(t *testing.T) {
 
 func TestMapString_SetFunc(t *testing.T) {
 	age := NewMapString(map[string]string{"foo": "bar"}, 1)
-	age.SetFunc("foo", func(v string) string {
+	age.SetFunc("foo", func(v string, ok bool) string {
 		return v + " world"
 	})
 	a := age.value["foo"]
@@ -315,7 +315,7 @@ func BenchmarkMapString_SetFunc(b *testing.B) {
 	age := NewMapString(map[string]string{key: "bar"}, 1)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		age.SetFunc(key, func(v string) string {
+		age.SetFunc(key, func(v string, ok bool) string {
 			return v + " world"
 		})
 	}
