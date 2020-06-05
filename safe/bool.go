@@ -1,6 +1,7 @@
 package safe
 
 import (
+	"encoding/json"
 	"strconv"
 	"sync"
 )
@@ -19,6 +20,20 @@ func (b *Bool) String() string {
 	v := b.value
 	b.mutex.RUnlock()
 	return "Bool{" + strconv.FormatBool(v) + "}"
+}
+
+func (b *Bool) MarshalJSON() ([]byte, error) {
+	b.mutex.RLock()
+	v := b.value
+	b.mutex.RUnlock()
+	return json.Marshal(v)
+}
+
+func (b *Bool) UnmarshalJSON(buf []byte) error {
+	b.mutex.Lock()
+	err := json.Unmarshal(buf, &b.value)
+	b.mutex.Unlock()
+	return err
 }
 
 func (b *Bool) Get() bool {
