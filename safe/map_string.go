@@ -153,3 +153,11 @@ func (m *MapString) RangeB(f func(k, v string) bool) {
 		}
 	}
 }
+
+// Copy copies and creates a new MapString.
+func (m *MapString) Copy() *MapString {
+	m.mutex.RLock()
+	ret := NewMapString(m.value, 0)
+	m.mutex.RUnlock()
+	return ret
+}

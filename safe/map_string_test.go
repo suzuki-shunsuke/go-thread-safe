@@ -244,6 +244,29 @@ func TestMapString_RangeB(t *testing.T) {
 	})
 }
 
+func TestMapString_Copy(t *testing.T) {
+	age := NewMapString(map[string]string{"foo": "bar"}, 1)
+
+	var wg sync.WaitGroup
+	var cp *MapString
+	wg.Add(2)
+	go func() {
+		cp = age.Copy()
+		wg.Done()
+	}()
+	go func() {
+		age.Set("foo", "bar")
+		wg.Done()
+	}()
+	wg.Wait()
+
+	exp := 1
+	a := len(cp.value)
+	if a != exp {
+		t.Fatalf("len(cp.value) = %d, wanted %d", a, exp)
+	}
+}
+
 func TestMapString_SetDefault(t *testing.T) {
 	age := NewMapString(map[string]string{"foo": "bar"}, 1)
 
