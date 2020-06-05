@@ -93,6 +93,15 @@ func (m *MapString) Set(k, v string) {
 	m.mutex.Unlock()
 }
 
+// SetDefault sets the key and value to the map if the map doesn't have the key with lock.
+func (m *MapString) SetDefault(k, v string) {
+	m.mutex.Lock()
+	if _, ok := m.value[k]; !ok {
+		m.value[k] = v
+	}
+	m.mutex.Unlock()
+}
+
 // SetFunc gets a value of the key from the map and calls the function and sets the returned value to the map with lock.
 // This is used to update the value based on the original value atomicaly.
 func (m *MapString) SetFunc(k string, f func(v string) string) {
