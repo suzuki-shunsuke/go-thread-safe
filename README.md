@@ -15,6 +15,10 @@ Go small library which provides thread safe data types.
 * `bool`
 * `map[string]string`
 
+## Document
+
+https://pkg.go.dev/github.com/suzuki-shunsuke/go-thread-safe/safe
+
 ## License
 
 [MIT](LICENSE)
