@@ -271,10 +271,10 @@ func TestMapString_CopyData(t *testing.T) {
 	age := NewMapString(map[string]string{"foo": "bar"}, 1)
 
 	var wg sync.WaitGroup
-	var cp map[string]string
+	cp := map[string]string{}
 	wg.Add(2)
 	go func() {
-		cp = age.CopyData()
+		age.CopyData(cp)
 		wg.Done()
 	}()
 	go func() {
