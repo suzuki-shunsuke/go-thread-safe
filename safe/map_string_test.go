@@ -192,7 +192,7 @@ func TestMapString_Set(t *testing.T) {
 
 func TestMapString_SetFunc(t *testing.T) {
 	age := NewMapString(map[string]string{"foo": "bar"}, 1)
-	age.SetFunc("foo", func(v string) string {
+	age.SetFunc("foo", func(v string, ok bool) string {
 		return v + " world"
 	})
 	a := age.value["foo"]
@@ -244,6 +244,108 @@ func TestMapString_RangeB(t *testing.T) {
 	})
 }
 
+func TestMapString_Copy(t *testing.T) {
+	age := NewMapString(map[string]string{"foo": "bar"}, 1)
+
+	var wg sync.WaitGroup
+	var cp *MapString
+	wg.Add(2)
+	go func() {
+		cp = age.Copy()
+		wg.Done()
+	}()
+	go func() {
+		age.Set("foo", "bar")
+		wg.Done()
+	}()
+	wg.Wait()
+
+	exp := 1
+	a := len(cp.value)
+	if a != exp {
+		t.Fatalf("len(cp.value) = %d, wanted %d", a, exp)
+	}
+}
+
+func TestMapString_CopyData(t *testing.T) {
+	age := NewMapString(map[string]string{"foo": "bar"}, 1)
+
+	var wg sync.WaitGroup
+	var cp map[string]string
+	wg.Add(2)
+	go func() {
+		cp = age.CopyData()
+		wg.Done()
+	}()
+	go func() {
+		age.Set("foo", "bar")
+		wg.Done()
+	}()
+	wg.Wait()
+
+	exp := 1
+	a := len(cp)
+	if a != exp {
+		t.Fatalf("len(cp.value) = %d, wanted %d", a, exp)
+	}
+}
+
+func TestMapString_SetDefault(t *testing.T) {
+	age := NewMapString(map[string]string{"foo": "bar"}, 1)
+
+	var wg sync.WaitGroup
+	wg.Add(2)
+	go func() {
+		age.SetDefault("foo", "zoo")
+		wg.Done()
+	}()
+	go func() {
+		age.SetDefault("bar", "world")
+		wg.Done()
+	}()
+	wg.Wait()
+
+	exp := "bar"
+	a := age.GetUnsafe("foo")
+	if a != exp {
+		t.Fatalf(`age.GetUnsafe("foo") = %s, wanted %s`, a, exp)
+	}
+
+	exp = "world"
+	a = age.GetUnsafe("bar")
+	if a != exp {
+		t.Fatalf(`age.GetUnsafe("bar") = %s, wanted %s`, a, exp)
+	}
+}
+
+func TestMapString_SetDefaultR(t *testing.T) {
+	age := NewMapString(map[string]string{"foo": "bar"}, 1)
+
+	var wg sync.WaitGroup
+	wg.Add(2)
+	go func() {
+		age.SetDefaultR("foo", "zoo")
+		wg.Done()
+	}()
+	go func() {
+		age.SetDefaultR("bar", "world")
+		wg.Done()
+	}()
+	wg.Wait()
+
+	exp := "bar"
+	a := age.GetUnsafe("foo")
+	if a != exp {
+		t.Fatalf(`age.GetUnsafe("foo") = %s, wanted %s`, a, exp)
+	}
+
+	exp = "world"
+	a = age.GetUnsafe("bar")
+	if a != exp {
+		t.Fatalf(`age.GetUnsafe("bar") = %s, wanted %s`, a, exp)
+	}
+}
+
 func BenchmarkMapString_Set(b *testing.B) {
 	key := "foo"
 	age := NewMapString(map[string]string{key: "bar"}, 1)
@@ -259,7 +361,7 @@ func BenchmarkMapString_SetFunc(b *testing.B) {
 	age := NewMapString(map[string]string{key: "bar"}, 1)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		age.SetFunc(key, func(v string) string {
+		age.SetFunc(key, func(v string, ok bool) string {
 			return v + " world"
 		})
 	}

@@ -93,31 +93,82 @@ func (m *MapString) Set(k, v string) {
 	m.mutex.Unlock()
 }
 
-// SetFunc gets a value of the key from the map and calls the function and sets the returned value to the map with lock.
-// This is used to update the value based on the original value atomicaly.
-func (m *MapString) SetFunc(k string, f func(v string) string) {
+// SetDefault sets the key and value to the map if the map doesn't have the key with lock.
+func (m *MapString) SetDefault(k, v string) {
 	m.mutex.Lock()
-	m.value[k] = f(m.value[k])
+	if _, ok := m.value[k]; !ok {
+		m.value[k] = v
+	}
 	m.mutex.Unlock()
 }
 
-// Range gets all pairs of the key and value from the map and call the function with lock.
-func (m *MapString) Range(f func(k, v string)) {
-	m.mutex.RLock()
-	for k, v := range m.value {
-		f(k, v)
+// SetDefaultR sets the key and value to the map if the map doesn't have the key and returns the value with lock.
+// true is returned if the map has already haven the key and the value isn't updated.
+func (m *MapString) SetDefaultR(k, v string) (string, bool) {
+	m.mutex.Lock()
+	a, ok := m.value[k]
+	if !ok {
+		m.value[k] = v
+		a = v
 	}
-	m.mutex.RUnlock()
+	m.mutex.Unlock()
+	return a, ok
 }
 
-// RangeBUnsafe gets pairs of the key and value from the map and call the function with lock.
+// SetFunc gets a value of the key from the map and calls the function and sets the returned value to the map with lock.
+// This is used to update the value based on the original value atomicaly.
+func (m *MapString) SetFunc(k string, f func(string, bool) string) {
+	m.mutex.Lock()
+	v, ok := m.value[k]
+	m.value[k] = f(v, ok)
+	m.mutex.Unlock()
+}
+
+// Range gets all pairs of the key and value from the map with lock and calls the function.
+func (m *MapString) Range(f func(k, v string)) {
+	m.mutex.RLock()
+	copiedM := make(map[string]string, len(m.value))
+	for k, v := range m.value {
+		copiedM[k] = v
+	}
+	m.mutex.RUnlock()
+	for k, v := range copiedM {
+		f(k, v)
+	}
+}
+
+// RangeB gets all pairs of the key and value from the map with lock and calls the function.
 // If the function returns false, the loop ends.
 func (m *MapString) RangeB(f func(k, v string) bool) {
 	m.mutex.RLock()
+	copiedM := make(map[string]string, len(m.value))
 	for k, v := range m.value {
+		copiedM[k] = v
+	}
+	m.mutex.RUnlock()
+
+	for k, v := range copiedM {
 		if !f(k, v) {
 			break
 		}
 	}
+}
+
+// Copy copies and creates a new MapString.
+func (m *MapString) Copy() *MapString {
+	m.mutex.RLock()
+	ret := NewMapString(m.value, 0)
 	m.mutex.RUnlock()
+	return ret
+}
+
+// CopyData copies an internal map[string]string and creates a new map[string]string.
+func (m *MapString) CopyData() map[string]string {
+	m.mutex.RLock()
+	copiedM := make(map[string]string, len(m.value))
+	for k, v := range m.value {
+		copiedM[k] = v
+	}
+	m.mutex.RUnlock()
+	return copiedM
 }
