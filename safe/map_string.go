@@ -1,6 +1,8 @@
 package safe
 
 import (
+	"encoding/json"
+	"fmt"
 	"sync"
 )
 
@@ -25,6 +27,27 @@ func NewMapString(value map[string]string, size int) *MapString {
 	return &MapString{ // escapes to heap
 		value: val,
 	}
+}
+
+func (m *MapString) String() string {
+	m.mutex.RLock()
+	v := "MapString{" + fmt.Sprintf("%v", m.value) + "}"
+	m.mutex.RUnlock()
+	return v
+}
+
+func (m *MapString) MarshalJSON() ([]byte, error) {
+	m.mutex.RLock()
+	b, err := json.Marshal(m.value)
+	m.mutex.RUnlock()
+	return b, err
+}
+
+func (m *MapString) UnmarshalJSON(buf []byte) error {
+	m.mutex.Lock()
+	err := json.Unmarshal(buf, &m.value)
+	m.mutex.Unlock()
+	return err
 }
 
 // Get gets a value from the map with lock.
