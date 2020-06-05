@@ -1,6 +1,7 @@
 package safe
 
 import (
+	"encoding/json"
 	"sync"
 )
 
@@ -11,6 +12,27 @@ import (
 type String struct {
 	value string
 	mutex sync.RWMutex
+}
+
+func (s *String) MarshalJSON() ([]byte, error) {
+	s.mutex.RLock()
+	v := s.value
+	s.mutex.RUnlock()
+	return json.Marshal(v)
+}
+
+func (s *String) UnmarshalJSON(b []byte) error {
+	s.mutex.Lock()
+	err := json.Unmarshal(b, &s.value)
+	s.mutex.Unlock()
+	return err
+}
+
+func (s *String) String() string {
+	s.mutex.RLock()
+	v := s.value
+	s.mutex.RUnlock()
+	return "String{" + v + "}"
 }
 
 func (s *String) Get() string {

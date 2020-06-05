@@ -1,9 +1,91 @@
 package safe
 
 import (
+	"encoding/json"
+	"strings"
 	"sync"
 	"testing"
 )
+
+func TestMapString_String(t *testing.T) {
+	age := NewMapString(map[string]string{"foo": "bar"}, 0)
+	var wg sync.WaitGroup
+	wg.Add(2)
+	a := ""
+	go func() {
+		age.Set("zoo", "world")
+		wg.Done()
+	}()
+	go func() {
+		a = age.String()
+		wg.Done()
+	}()
+	wg.Wait()
+	a = age.String()
+	if !strings.HasPrefix(a, "MapString") {
+		t.Fatalf("MapString.String() = %s, must start with 'MapString'", a)
+	}
+}
+
+func TestMapString_MarshalJSON(t *testing.T) {
+	age := NewMapString(map[string]string{"foo": "bar"}, 0)
+	var wg sync.WaitGroup
+	wg.Add(2)
+	var err error
+	go func() {
+		age.Set("foo", "world")
+		wg.Done()
+	}()
+	go func() {
+		_, err = json.Marshal(age)
+		wg.Done()
+	}()
+	wg.Wait()
+
+	if err != nil {
+		t.Fatal(err)
+	}
+	b, err := json.Marshal(age)
+	if err != nil {
+		t.Fatal(err)
+	}
+	exp := `{"foo":"world"}`
+
+	if string(b) != exp {
+		t.Fatalf("MapString.MarshalJSON() = %s, wanted %s", string(b), exp)
+	}
+}
+
+func TestMapString_UnmarshalJSON(t *testing.T) {
+	age := NewMapString(map[string]string{"foo": "bar"}, 0)
+	var wg sync.WaitGroup
+	buf := []byte(`{"hello":"world"}`)
+	wg.Add(2)
+	var err error
+	go func() {
+		age.Set("zoo", "world")
+		wg.Done()
+	}()
+	go func() {
+		err = json.Unmarshal(buf, age)
+		wg.Done()
+	}()
+	wg.Wait()
+
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := json.Unmarshal(buf, age); err != nil {
+		t.Fatal(err)
+	}
+	if len(age.value) != 3 {
+		t.Fatalf("len(age.value) = %d, wanted 3", len(age.value))
+	}
+	exp := "world" //nolint:goconst
+	if age.value["hello"] != exp {
+		t.Fatalf(`age.value["hello"] = %s, wanted "%s"`, age.value["hello"], exp)
+	}
+}
 
 func TestMapString_Get(t *testing.T) {
 	age := NewMapString(map[string]string{"foo": "bar"}, 0)

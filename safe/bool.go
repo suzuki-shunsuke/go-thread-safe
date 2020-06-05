@@ -1,6 +1,8 @@
 package safe
 
 import (
+	"encoding/json"
+	"strconv"
 	"sync"
 )
 
@@ -13,35 +15,56 @@ type Bool struct {
 	mutex sync.RWMutex
 }
 
-func (s *Bool) Get() bool {
-	s.mutex.RLock()
-	v := s.value
-	s.mutex.RUnlock()
+func (b *Bool) String() string {
+	b.mutex.RLock()
+	v := b.value
+	b.mutex.RUnlock()
+	return "Bool{" + strconv.FormatBool(v) + "}"
+}
+
+func (b *Bool) MarshalJSON() ([]byte, error) {
+	b.mutex.RLock()
+	v := b.value
+	b.mutex.RUnlock()
+	return json.Marshal(v)
+}
+
+func (b *Bool) UnmarshalJSON(buf []byte) error {
+	b.mutex.Lock()
+	err := json.Unmarshal(buf, &b.value)
+	b.mutex.Unlock()
+	return err
+}
+
+func (b *Bool) Get() bool {
+	b.mutex.RLock()
+	v := b.value
+	b.mutex.RUnlock()
 	return v
 }
 
-func (s *Bool) Set(v bool) {
-	s.mutex.Lock()
-	s.value = v
-	s.mutex.Unlock()
+func (b *Bool) Set(v bool) {
+	b.mutex.Lock()
+	b.value = v
+	b.mutex.Unlock()
 }
 
-func (s *Bool) SetFunc(f func(v bool) bool) {
-	s.mutex.Lock()
-	s.value = f(s.value)
-	s.mutex.Unlock()
+func (b *Bool) SetFunc(f func(v bool) bool) {
+	b.mutex.Lock()
+	b.value = f(b.value)
+	b.mutex.Unlock()
 }
 
-func (s *Bool) Invert() {
-	s.mutex.Lock()
-	s.value = !s.value
-	s.mutex.Unlock()
+func (b *Bool) Invert() {
+	b.mutex.Lock()
+	b.value = !b.value
+	b.mutex.Unlock()
 }
 
-func (s *Bool) InvertR() bool {
-	s.mutex.Lock()
-	a := !s.value
-	s.value = a
-	s.mutex.Unlock()
+func (b *Bool) InvertR() bool {
+	b.mutex.Lock()
+	a := !b.value
+	b.value = a
+	b.mutex.Unlock()
 	return a
 }
