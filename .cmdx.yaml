@@ -58,3 +58,10 @@ tasks:
   require:
     exec:
     - shfmt
+- name: heap
+  description: show where heap allocation occur
+  usage: show where heap allocation occur
+  script: go vet -gcflags="-m" ./... 2>&1 >/dev/null | grep "escapes to heap" | grep -v "_test.go"
+  require:
+    exec:
+    - go
