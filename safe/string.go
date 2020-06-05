@@ -40,7 +40,7 @@ func (s *String) Add(v string) {
 
 func (s *String) AddR(v string) string {
 	s.mutex.Lock()
-	a := s.value + v
+	a := s.value + v // escapes to heap
 	s.value = a
 	s.mutex.Unlock()
 	return a

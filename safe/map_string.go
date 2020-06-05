@@ -18,11 +18,11 @@ func NewMapString(value map[string]string, size int) *MapString {
 	if s > size {
 		size = s
 	}
-	val := make(map[string]string, size)
+	val := make(map[string]string, size) // escapes to heap
 	for k, v := range value {
 		val[k] = v
 	}
-	return &MapString{
+	return &MapString{ // escapes to heap
 		value: val,
 	}
 }
