@@ -1,6 +1,7 @@
 package safe
 
 import (
+	"encoding/json"
 	"sync"
 	"testing"
 )
@@ -23,6 +24,61 @@ func TestString_String(t *testing.T) {
 	exp := "String{foo}"
 	if a != exp {
 		t.Fatalf("String.String() = %s, wanted %s", a, exp)
+	}
+}
+
+func TestString_MarshalJSON(t *testing.T) {
+	age := &String{}
+	var wg sync.WaitGroup
+	wg.Add(2)
+	go func() {
+		age.Set("foo")
+		wg.Done()
+	}()
+	var err error
+	go func() {
+		_, err = json.Marshal(age)
+		wg.Done()
+	}()
+	wg.Wait()
+	if err != nil {
+		t.Fatal(err)
+	}
+	b, err := json.Marshal(age)
+	if err != nil {
+		t.Fatal(err)
+	}
+	exp := `"foo"`
+	if string(b) != exp {
+		t.Fatalf("String.String() = %s, wanted %s", string(b), exp)
+	}
+}
+
+func TestString_UnmarshalJSON(t *testing.T) {
+	age := &String{}
+	var wg sync.WaitGroup
+	buf := []byte(`"hello"`)
+	wg.Add(2)
+	go func() {
+		age.Set("foo")
+		wg.Done()
+	}()
+	var err error
+	go func() {
+		err = json.Unmarshal(buf, age)
+		wg.Done()
+	}()
+	wg.Wait()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if err := json.Unmarshal(buf, age); err != nil {
+		t.Fatal(err)
+	}
+	exp := "hello" //nolint:goconst
+	if age.value != exp {
+		t.Fatalf("String.String() = %s, wanted %s", age.value, exp)
 	}
 }
 
