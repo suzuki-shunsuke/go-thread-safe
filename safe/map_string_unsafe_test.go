@@ -112,3 +112,14 @@ func TestMapString_CopyUnsafe(t *testing.T) {
 		t.Fatalf("len(cp.value) = %d, wanted %d", a, exp)
 	}
 }
+
+func TestMapString_CopyDataUnsafe(t *testing.T) {
+	age := NewMapString(map[string]string{"foo": "bar"}, 1)
+	cp := age.CopyDataUnsafe()
+
+	exp := 1
+	a := len(cp)
+	if a != exp {
+		t.Fatalf("len(cp.value) = %d, wanted %d", a, exp)
+	}
+}

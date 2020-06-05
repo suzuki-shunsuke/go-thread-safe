@@ -60,3 +60,12 @@ func (m *MapString) RangeBUnsafe(f func(k, v string) bool) {
 func (m *MapString) CopyUnsafe() *MapString {
 	return NewMapString(m.value, 0)
 }
+
+// CopyDataUnsafe copies an internal map[string]string and creates a new map[string]string without lock.
+func (m *MapString) CopyDataUnsafe() map[string]string {
+	copiedM := make(map[string]string, len(m.value))
+	for k, v := range m.value {
+		copiedM[k] = v
+	}
+	return copiedM
+}
