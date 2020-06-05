@@ -18,11 +18,11 @@ func NewMapString(value map[string]string, size int) *MapString {
 	if s > size {
 		size = s
 	}
-	val := make(map[string]string, size)
+	val := make(map[string]string, size) // escapes to heap
 	for k, v := range value {
 		val[k] = v
 	}
-	return &MapString{
+	return &MapString{ // escapes to heap
 		value: val,
 	}
 }
@@ -162,13 +162,11 @@ func (m *MapString) Copy() *MapString {
 	return ret
 }
 
-// CopyData copies an internal map[string]string and creates a new map[string]string.
-func (m *MapString) CopyData() map[string]string {
+// CopyData copies an internal map[string]string to target.
+func (m *MapString) CopyData(target map[string]string) {
 	m.mutex.RLock()
-	copiedM := make(map[string]string, len(m.value))
 	for k, v := range m.value {
-		copiedM[k] = v
+		target[k] = v
 	}
 	m.mutex.RUnlock()
-	return copiedM
 }

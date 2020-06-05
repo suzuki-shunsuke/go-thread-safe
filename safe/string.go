@@ -4,15 +4,13 @@ import (
 	"sync"
 )
 
+// String wraps bool.
+// String must be used as the pointer because String has sync.RWMutex as a private field.
+// A RWMutex must not be copied after first use.
+// https://golang.org/pkg/sync/#RWMutex
 type String struct {
 	value string
 	mutex sync.RWMutex
-}
-
-func NewString(v string) *String {
-	return &String{
-		value: v,
-	}
 }
 
 func (s *String) Get() string {
@@ -42,7 +40,7 @@ func (s *String) Add(v string) {
 
 func (s *String) AddR(v string) string {
 	s.mutex.Lock()
-	a := s.value + v
+	a := s.value + v // escapes to heap
 	s.value = a
 	s.mutex.Unlock()
 	return a

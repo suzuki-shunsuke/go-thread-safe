@@ -71,11 +71,9 @@ func (m *MapString) CopyUnsafe() *MapString {
 	return NewMapString(m.value, 0)
 }
 
-// CopyDataUnsafe copies an internal map[string]string and creates a new map[string]string without lock.
-func (m *MapString) CopyDataUnsafe() map[string]string {
-	copiedM := make(map[string]string, len(m.value))
+// CopyDataUnsafe copies an internal map[string]string to target without lock.
+func (m *MapString) CopyDataUnsafe(target map[string]string) {
 	for k, v := range m.value {
-		copiedM[k] = v
+		target[k] = v
 	}
-	return copiedM
 }

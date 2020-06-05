@@ -132,7 +132,8 @@ func TestMapString_CopyUnsafe(t *testing.T) {
 
 func TestMapString_CopyDataUnsafe(t *testing.T) {
 	age := NewMapString(map[string]string{"foo": "bar"}, 1)
-	cp := age.CopyDataUnsafe()
+	cp := make(map[string]string, 1)
+	age.CopyDataUnsafe(cp)
 
 	exp := 1
 	a := len(cp)

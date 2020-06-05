@@ -4,15 +4,13 @@ import (
 	"sync"
 )
 
+// Bool wraps bool.
+// Bool must be used as the pointer because Bool has sync.RWMutex as a private field.
+// A RWMutex must not be copied after first use.
+// https://golang.org/pkg/sync/#RWMutex
 type Bool struct {
 	value bool
 	mutex sync.RWMutex
-}
-
-func NewBool(v bool) *Bool {
-	return &Bool{
-		value: v,
-	}
 }
 
 func (s *Bool) Get() bool {

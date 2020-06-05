@@ -7,7 +7,7 @@ import (
 
 func TestInt_Get(t *testing.T) {
 	v := 5
-	age := NewInt(v)
+	age := &Int{value: v}
 	var wg sync.WaitGroup
 	wg.Add(2)
 	a := 0
@@ -30,7 +30,7 @@ func TestInt_Get(t *testing.T) {
 }
 
 func TestInt_Set(t *testing.T) {
-	age := NewInt(5)
+	age := &Int{value: 5}
 	var wg sync.WaitGroup
 	wg.Add(2)
 	go func() {
@@ -49,7 +49,7 @@ func TestInt_Set(t *testing.T) {
 }
 
 func TestInt_SetFunc(t *testing.T) {
-	age := NewInt(5)
+	age := &Int{value: 5}
 	var wg sync.WaitGroup
 	wg.Add(2)
 	go func() {
@@ -72,7 +72,7 @@ func TestInt_SetFunc(t *testing.T) {
 }
 
 func TestInt_Add(t *testing.T) {
-	age := NewInt(5)
+	age := &Int{value: 5}
 	var wg sync.WaitGroup
 	wg.Add(2)
 	go func() {
@@ -91,7 +91,7 @@ func TestInt_Add(t *testing.T) {
 }
 
 func TestInt_AddR(t *testing.T) {
-	age := NewInt(5)
+	age := &Int{value: 5}
 	var wg sync.WaitGroup
 	wg.Add(2)
 	go func() {
@@ -110,7 +110,7 @@ func TestInt_AddR(t *testing.T) {
 }
 
 func TestInt_Sub(t *testing.T) {
-	age := NewInt(5)
+	age := &Int{value: 5}
 	var wg sync.WaitGroup
 	wg.Add(2)
 	go func() {
@@ -129,7 +129,7 @@ func TestInt_Sub(t *testing.T) {
 }
 
 func TestInt_SubR(t *testing.T) {
-	age := NewInt(5)
+	age := &Int{value: 5}
 	var wg sync.WaitGroup
 	wg.Add(2)
 	go func() {
@@ -148,7 +148,7 @@ func TestInt_SubR(t *testing.T) {
 }
 
 func TestInt_Mul(t *testing.T) {
-	age := NewInt(5)
+	age := &Int{value: 5}
 	var wg sync.WaitGroup
 	wg.Add(2)
 	go func() {
@@ -167,7 +167,7 @@ func TestInt_Mul(t *testing.T) {
 }
 
 func TestInt_MulR(t *testing.T) {
-	age := NewInt(5)
+	age := &Int{value: 5}
 	var wg sync.WaitGroup
 	wg.Add(2)
 	go func() {
@@ -186,7 +186,7 @@ func TestInt_MulR(t *testing.T) {
 }
 
 func TestInt_Div(t *testing.T) {
-	age := NewInt(20)
+	age := &Int{value: 20}
 	var wg sync.WaitGroup
 	wg.Add(2)
 	go func() {
@@ -205,7 +205,7 @@ func TestInt_Div(t *testing.T) {
 }
 
 func TestInt_DivR(t *testing.T) {
-	age := NewInt(20)
+	age := &Int{value: 20}
 	var wg sync.WaitGroup
 	wg.Add(2)
 	go func() {
@@ -224,7 +224,7 @@ func TestInt_DivR(t *testing.T) {
 }
 
 func BenchmarkInt_Add(b *testing.B) {
-	age := NewInt(5)
+	age := &Int{value: 5}
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		age.Add(1)
@@ -232,7 +232,7 @@ func BenchmarkInt_Add(b *testing.B) {
 }
 
 func BenchmarkInt_AddR(b *testing.B) {
-	age := NewInt(5)
+	age := &Int{value: 5}
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		age.AddR(1)

@@ -5,17 +5,12 @@ import (
 )
 
 // Int wraps a int.
+// Int must be used as the pointer because Int has sync.RWMutex as a private field.
+// A RWMutex must not be copied after first use.
+// https://golang.org/pkg/sync/#RWMutex
 type Int struct {
 	value int
 	mutex sync.RWMutex
-}
-
-// NewInt creates a Int.
-// v is an initial value.
-func NewInt(v int) *Int {
-	return &Int{
-		value: v,
-	}
 }
 
 // Get gets a value with lock.

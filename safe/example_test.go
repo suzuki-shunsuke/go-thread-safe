@@ -8,7 +8,7 @@ import (
 )
 
 func Example() {
-	flag := safe.NewBool(false)
+	flag := &safe.Bool{}
 
 	data := map[string]int{
 		"foo": 1,
