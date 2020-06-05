@@ -32,6 +32,23 @@ func (m *MapString) SetUnsafe(k, v string) {
 	m.value[k] = v
 }
 
+// SetDefaultUnsafe sets the key and value to the map if the map doesn't have the key without lock.
+func (m *MapString) SetDefaultUnsafe(k, v string) {
+	if _, ok := m.value[k]; !ok {
+		m.value[k] = v
+	}
+}
+
+// SetDefaultRUnsafe sets the key and value to the map if the map doesn't have the key without lock.
+// true is returned if the map has already haven the key and the value isn't updated.
+func (m *MapString) SetDefaultRUnsafe(k, v string) (string, bool) {
+	if a, ok := m.value[k]; ok {
+		return a, true
+	}
+	m.value[k] = v
+	return v, false
+}
+
 // RangeUnsafe gets all pairs of the key and value from the map and call the function without lock.
 func (m *MapString) RangeUnsafe(f func(k, v string)) {
 	for k, v := range m.value {
@@ -47,4 +64,18 @@ func (m *MapString) RangeBUnsafe(f func(k, v string) bool) {
 			break
 		}
 	}
+}
+
+// CopyUnsafe copies and creates a new MapString without lock.
+func (m *MapString) CopyUnsafe() *MapString {
+	return NewMapString(m.value, 0)
+}
+
+// CopyDataUnsafe copies an internal map[string]string and creates a new map[string]string without lock.
+func (m *MapString) CopyDataUnsafe() map[string]string {
+	copiedM := make(map[string]string, len(m.value))
+	for k, v := range m.value {
+		copiedM[k] = v
+	}
+	return copiedM
 }
