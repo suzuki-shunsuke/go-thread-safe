@@ -7,7 +7,7 @@ import (
 
 func TestString_Get(t *testing.T) {
 	v := "hello"
-	age := NewString(v)
+	age := &String{value: v}
 	var wg sync.WaitGroup
 	wg.Add(2)
 	a := ""
@@ -30,7 +30,7 @@ func TestString_Get(t *testing.T) {
 }
 
 func TestString_Set(t *testing.T) {
-	age := NewString("hello")
+	age := &String{value: "hello"}
 	var wg sync.WaitGroup
 	wg.Add(2)
 	go func() {
@@ -49,7 +49,7 @@ func TestString_Set(t *testing.T) {
 }
 
 func TestString_SetFunc(t *testing.T) {
-	age := NewString("hello")
+	age := &String{value: "hello"}
 	var wg sync.WaitGroup
 	wg.Add(2)
 	go func() {
@@ -73,7 +73,7 @@ func TestString_SetFunc(t *testing.T) {
 }
 
 func TestString_Add(t *testing.T) {
-	age := NewString("hello")
+	age := &String{value: "hello"}
 	var wg sync.WaitGroup
 	wg.Add(2)
 	go func() {
@@ -93,7 +93,7 @@ func TestString_Add(t *testing.T) {
 }
 
 func TestString_AddR(t *testing.T) {
-	age := NewString("hello")
+	age := &String{value: "hello"}
 	var wg sync.WaitGroup
 	wg.Add(2)
 	go func() {
@@ -113,7 +113,7 @@ func TestString_AddR(t *testing.T) {
 }
 
 func BenchmarkString_Add(b *testing.B) {
-	age := NewString("")
+	age := &String{}
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		age.Add("h")
@@ -121,7 +121,7 @@ func BenchmarkString_Add(b *testing.B) {
 }
 
 func BenchmarkString_AddR(b *testing.B) {
-	age := NewString("")
+	age := &String{}
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		age.AddR("h")
