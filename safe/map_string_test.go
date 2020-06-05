@@ -272,6 +272,34 @@ func TestMapString_SetDefault(t *testing.T) {
 	}
 }
 
+func TestMapString_SetDefaultR(t *testing.T) {
+	age := NewMapString(map[string]string{"foo": "bar"}, 1)
+
+	var wg sync.WaitGroup
+	wg.Add(2)
+	go func() {
+		age.SetDefaultR("foo", "zoo")
+		wg.Done()
+	}()
+	go func() {
+		age.SetDefaultR("bar", "world")
+		wg.Done()
+	}()
+	wg.Wait()
+
+	exp := "bar"
+	a := age.GetUnsafe("foo")
+	if a != exp {
+		t.Fatalf(`age.GetUnsafe("foo") = %s, wanted %s`, a, exp)
+	}
+
+	exp = "world"
+	a = age.GetUnsafe("bar")
+	if a != exp {
+		t.Fatalf(`age.GetUnsafe("bar") = %s, wanted %s`, a, exp)
+	}
+}
+
 func BenchmarkMapString_Set(b *testing.B) {
 	key := "foo"
 	age := NewMapString(map[string]string{key: "bar"}, 1)
