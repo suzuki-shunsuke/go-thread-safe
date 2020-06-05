@@ -1,6 +1,7 @@
 package safe
 
 import (
+	"encoding/json"
 	"strconv"
 	"sync"
 )
@@ -19,6 +20,20 @@ func (i *Int) String() string {
 	v := i.value
 	i.mutex.RUnlock()
 	return "Int{" + strconv.Itoa(v) + "}"
+}
+
+func (i *Int) MarshalJSON() ([]byte, error) {
+	i.mutex.RLock()
+	v := i.value
+	i.mutex.RUnlock()
+	return json.Marshal(v)
+}
+
+func (i *Int) UnmarshalJSON(b []byte) error {
+	i.mutex.Lock()
+	err := json.Unmarshal(b, &i.value)
+	i.mutex.Unlock()
+	return err
 }
 
 // Get gets a value with lock.
