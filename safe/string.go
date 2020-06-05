@@ -13,6 +13,13 @@ type String struct {
 	mutex sync.RWMutex
 }
 
+func (s *String) String() string {
+	s.mutex.RLock()
+	v := s.value
+	s.mutex.RUnlock()
+	return "String{" + v + "}"
+}
+
 func (s *String) Get() string {
 	s.mutex.RLock()
 	v := s.value

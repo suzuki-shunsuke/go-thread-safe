@@ -5,6 +5,27 @@ import (
 	"testing"
 )
 
+func TestString_String(t *testing.T) {
+	age := &String{}
+	var wg sync.WaitGroup
+	wg.Add(2)
+	a := ""
+	go func() {
+		age.Set("foo")
+		wg.Done()
+	}()
+	go func() {
+		a = age.String()
+		wg.Done()
+	}()
+	wg.Wait()
+	a = age.String()
+	exp := "String{foo}"
+	if a != exp {
+		t.Fatalf("String.String() = %s, wanted %s", a, exp)
+	}
+}
+
 func TestString_Get(t *testing.T) {
 	v := "hello"
 	age := &String{value: v}
