@@ -1,6 +1,7 @@
 package safe
 
 import (
+	"strconv"
 	"sync"
 )
 
@@ -11,6 +12,13 @@ import (
 type Bool struct {
 	value bool
 	mutex sync.RWMutex
+}
+
+func (b *Bool) String() string {
+	b.mutex.RLock()
+	v := b.value
+	b.mutex.RUnlock()
+	return "Bool{" + strconv.FormatBool(v) + "}"
 }
 
 func (b *Bool) Get() bool {

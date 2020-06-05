@@ -5,6 +5,27 @@ import (
 	"testing"
 )
 
+func TestBool_String(t *testing.T) {
+	age := &Bool{}
+	var wg sync.WaitGroup
+	wg.Add(2)
+	a := ""
+	go func() {
+		age.Set(true)
+		wg.Done()
+	}()
+	go func() {
+		a = age.String()
+		wg.Done()
+	}()
+	wg.Wait()
+	a = age.String()
+	exp := "Bool{true}"
+	if a != exp {
+		t.Fatalf("Bool.String() = %s, wanted %s", a, exp)
+	}
+}
+
 func TestBool_Get(t *testing.T) {
 	v := true
 	age := &Bool{value: v}
