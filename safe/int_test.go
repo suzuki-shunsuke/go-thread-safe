@@ -5,6 +5,27 @@ import (
 	"testing"
 )
 
+func TestInt_String(t *testing.T) {
+	age := &Int{}
+	var wg sync.WaitGroup
+	wg.Add(2)
+	a := ""
+	go func() {
+		age.Set(5)
+		wg.Done()
+	}()
+	go func() {
+		a = age.String()
+		wg.Done()
+	}()
+	wg.Wait()
+	a = age.String()
+	exp := "Int{5}"
+	if a != exp {
+		t.Fatalf("Int.String() = %s, wanted %s", a, exp)
+	}
+}
+
 func TestInt_Get(t *testing.T) {
 	v := 5
 	age := &Int{value: v}

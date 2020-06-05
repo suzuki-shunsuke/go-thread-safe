@@ -1,6 +1,7 @@
 package safe
 
 import (
+	"strconv"
 	"sync"
 )
 
@@ -11,6 +12,13 @@ import (
 type Int struct {
 	value int
 	mutex sync.RWMutex
+}
+
+func (i *Int) String() string {
+	i.mutex.RLock()
+	v := i.value
+	i.mutex.RUnlock()
+	return "Int{" + strconv.Itoa(v) + "}"
 }
 
 // Get gets a value with lock.
